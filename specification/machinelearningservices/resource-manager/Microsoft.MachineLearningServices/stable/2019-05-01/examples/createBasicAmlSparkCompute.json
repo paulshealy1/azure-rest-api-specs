@@ -8,15 +8,43 @@
         "parameters": {
             "location": "eastus",
             "properties": {
-                "computeType": "AmlCompute",
+                "computeType": "AmlSpark",
                 "properties": {
-                  "vmSize": "STANDARD_NC6",
-                  "vmPriority": "Dedicated",
-                  "scaleSettings": {
-                    "maxNodeCount": 1,
-                    "minNodeCount": 0,
-                    "nodeIdleSecondsBeforeScaleDown": 30
-                  }
+                    "sparkVersion":"2.3", 
+                    "pythonVersion": "3",
+                    "sparkConfigurations": [ 
+                        {
+                          "configName": "spark.speculation",
+                          "value": "true"
+                        },
+                        {
+                          "configName": "spark.streaming.ui.retainedBatches",
+                          "value": "5"
+                        }
+                     ],
+                     "environmentVariables": [
+                       {
+                          "name": "SPARK_WORKER_MEMORY",
+                          "value": "28000m"
+                       },
+                       {
+                          "name": "SPARK_LOCAL_DIRS",
+                          "value": "/local_disk0"
+                       }
+                    ],
+                    "driverSettings": {
+                        "vmSize":"Standard_DS2_v2"
+                    },
+                    "workerSettings": {
+                         "vmSize": "Standard_NC6",
+                         "vmPriority": "Dedicated",
+                         "scaleSettings": {
+                            "minNodeCount": 1,
+                            "maxNodeCount": 5,
+                            "nodeIdleSecondsBeforeScaleDown": 30
+                          }
+                    },
+                    "idleSecondsBeforeAutoTermination": 1200
                 }
             }
         }
@@ -29,7 +57,7 @@
                 "name": "compute123",
                 "location": "eastus",
                 "properties": {
-                    "computeType": "AmlCompute",
+                    "computeType": "AmlSpark",
                     "provisioningState": "Creating"
                 }
             }
@@ -41,7 +69,7 @@
                 "name": "compute123",
                 "location": "eastus",
                 "properties": {
-                    "computeType": "AmlCompute",
+                    "computeType": "AmlSpark",
                     "provisioningState": "Creating"
                 }
             },
