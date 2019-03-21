@@ -1823,12 +1823,13 @@
                   "type": "string",
                   "readOnly": true,
                   "title": "State of Spark cluster.",
-                  "description": "State of Spark. Possible values are: Starting - Indicates that the cluster is in the process of being created. Running - Indicates that the cluster has been started and is ready for use. Terminating - Indicates that the cluster is in the process of being terminated. Terminated - Indicates that a cluster has been successfully terminated.",
+                  "description": "State of Spark. Possible values are: Starting - Indicates that the cluster is in the process of being created. Running - Indicates that the cluster has been started and is ready for use. Terminating - Indicates that the cluster is in the process of being terminated. Terminated - Indicates that a cluster has been successfully terminated. Failed - Indicates that a cluster is unusable.",
                   "enum": [
                     "Starting",
                     "Running",
                     "Terminating",
-                    "Terminated"
+                    "Terminated",
+                    "Failed"
                   ],
                   "x-ms-enum": {
                     "name": "ClusterState",
