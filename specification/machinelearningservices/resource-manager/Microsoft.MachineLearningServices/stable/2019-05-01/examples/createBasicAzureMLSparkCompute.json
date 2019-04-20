@@ -8,17 +8,17 @@
         "parameters": {
             "location": "eastus",
             "properties": {
-                "computeType": "AmlSpark",
+                "computeType": "AzureMLSpark",
                 "properties": {
                     "sparkVersion":"2.3", 
                     "pythonVersion": "3",
                     "sparkConfigurations": [ 
                         {
-                          "configName": "spark.speculation",
+                          "name": "spark.speculation",
                           "value": "true"
                         },
                         {
-                          "configName": "spark.streaming.ui.retainedBatches",
+                          "name": "spark.streaming.ui.retainedBatches",
                           "value": "5"
                         }
                      ],
@@ -44,7 +44,7 @@
                             "nodeIdleSecondsBeforeScaleDown": 30
                           }
                     },
-                    "idleSecondsBeforeAutoTermination": 1200
+                    "idleMinutesBeforeAutoStop": 120
                 }
             }
         }
@@ -57,7 +57,7 @@
                 "name": "compute123",
                 "location": "eastus",
                 "properties": {
-                    "computeType": "AmlSpark",
+                    "computeType": "AzureMLSpark",
                     "provisioningState": "Creating"
                 }
             }
@@ -69,7 +69,7 @@
                 "name": "compute123",
                 "location": "eastus",
                 "properties": {
-                    "computeType": "AmlSpark",
+                    "computeType": "AzureMLSpark",
                     "provisioningState": "Creating"
                 }
             },

@@ -13,13 +13,15 @@
         "nodes": [
           {
             "nodeId": "tvm-3601533753_1-20170719t162906z",
-            "ipAddress": "13.84.190.124",
+            "publicIpAddress": "13.84.190.124",
+            "privateIpAddress": "84.12.34.42",
             "port": 50000,
             "nodeState": "running"
           },
           {
             "nodeId": "tvm-3601533753_2-20170719t162906z",
-            "ipAddress": "13.84.190.124",
+            "publicIpAddress": "13.84.190.124",
+            "privateIpAddress": "192.22.134.9",
             "port": 50001,
             "nodeState": "running"
           }

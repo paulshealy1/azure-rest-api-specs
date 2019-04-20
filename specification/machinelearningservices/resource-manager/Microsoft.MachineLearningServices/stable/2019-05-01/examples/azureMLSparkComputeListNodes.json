@@ -9,18 +9,20 @@
   "responses": {
     "200": {
       "body": {
-        "computeType": "AmlSpark",
+        "computeType": "AzureMLSpark",
         "nodes": [
           {
             "nodeId": "tvm-3601533753_1-20170719t162906z",
-            "ipAddress": "54.41.69.122",
+            "publicIpAddress": "54.41.69.122",
+            "privateIpAddress": "84.12.34.42",
             "port": 50000,
             "nodeType": "driver",
             "nodeState": "running"
           },
           {
             "nodeId": "tvm-3601533753_2-20170719t162906z",
-            "ipAddress": "13.84.190.124",
+            "publicIpAddress": "13.84.190.124",
+            "privateIpAddress": "210.82.14.8",
             "port": 50000,
             "nodeType": "worker",
             "nodeState": "running"

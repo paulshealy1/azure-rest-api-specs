@@ -537,7 +537,7 @@
         "description": "Gets compute definition by its name. Any secrets (storage keys, service credentials, etc) are not returned - use 'keys' nested resource to get them.",
         "x-ms-examples": {
           "Get a AKS Compute": { "$ref": "./examples/getAKSCompute.json" },
-          "Get an AML Spark Compute": { "$ref": "./examples/getAmlSparkCompute.json" },
+          "Get an AML Spark Compute": { "$ref": "./examples/getAzureMLSparkCompute.json" },
           "Get a AML Compute": { "$ref": "./examples/getAmlCompute.json" }
         },
         "parameters": [
@@ -583,7 +583,7 @@
         "x-ms-examples": {
           "Create a AML Compute": { "$ref": "./examples/createBasicAmlCompute.json" },
           "Create AKS Compute": { "$ref": "./examples/createBasicAKSCompute.json" },
-          "Create a AML Spark Compute": { "$ref": "./examples/createBasicAmlSparkCompute.json" },
+          "Create a AML Spark Compute": { "$ref": "./examples/createBasicAzureMLSparkCompute.json" },
           "Create a DataFactory Compute": { "$ref": "./examples/createBasicDataFactoryCompute.json" },
           "Update a AML Compute": { "$ref": "./examples/updateAmlCompute.json" },
           "Update a AKS Compute": { "$ref": "./examples/updateAKSCompute.json" }
@@ -644,7 +644,7 @@
         "description": "Updates properties of a compute. This call will overwrite a compute if it exists. This is a nonrecoverable operation.",
         "x-ms-long-running-operation": true,
         "x-ms-examples": {
-          "Update a AmlSpark Compute": { "$ref": "./examples/patchAmlSparkCompute.json" },
+          "Update a AzureMLSpark Compute": { "$ref": "./examples/patchAzureMLSparkCompute.json" },
           "Update a AmlCompute Compute": { "$ref": "./examples/patchAmlCompute.json" }
         },
         "parameters": [
@@ -674,6 +674,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Compute update completed.",
+            "schema": {
+              "$ref": "#/definitions/ComputeResource"
+            }
+          },
           "202": {
             "description": "Compute update initiated.",
             "schema": {
@@ -791,18 +797,22 @@
             "$ref": "./examples/amlComputeListNodes.json"
           },
           "Get compute nodes information for a Spark compute": {
-            "$ref": "./examples/amlSparkComputeListNodes.json"
+            "$ref": "./examples/azureMLSparkComputeListNodes.json"
           }
         }
       }
     },
-    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MachineLearningServices/workspaces/{workspaceName}/computes/{computeName}/terminate": {
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MachineLearningServices/workspaces/{workspaceName}/computes/{computeName}/stop": {
       "post": {
         "tags": [
           "MachineLearningComputes"
         ],
-        "operationId": "MachineLearningCompute_Terminate",
-        "description": "Terminate the running computer cluster.",
+        "operationId": "MachineLearningCompute_Stop",
+        "description": "Stop the running computer cluster.",
+        "x-ms-long-running-operation": true,
+        "x-ms-examples": {
+          "Stop a Spark Compute": { "$ref": "./examples/stopAzureMLSparkCompute.json" }
+        },
         "parameters": [
           {
             "$ref": "#/parameters/SubscriptionIdParameter"
@@ -825,7 +835,7 @@
             "description": "The request was successful; the request was well-formed and received properly."
           },
           "202": {
-            "description": "Compute termination initiated.",
+            "description": "Compute stop initiated.",
             "headers": {
               "Azure-AsyncOperation": {
                 "description": "URI to poll for asynchronous operation status.",
@@ -846,13 +856,17 @@
         }
       }
     },
-    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MachineLearningServices/workspaces/{workspaceName}/computes/{computeName}/restart": {
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MachineLearningServices/workspaces/{workspaceName}/computes/{computeName}/start": {
       "post": {
         "tags": [
           "MachineLearningComputes"
         ],
-        "operationId": "MachineLearningCompute_Restart",
-        "description": "Restart the terminated computer cluster.",
+        "operationId": "MachineLearningCompute_Start",
+        "description": "Start the stopped computer cluster.",
+        "x-ms-long-running-operation": true,
+        "x-ms-examples": {
+          "Start a Spark Compute": { "$ref": "./examples/startAzureMLSparkCompute.json" }
+        },
         "parameters": [
           {
             "$ref": "#/parameters/SubscriptionIdParameter"
@@ -875,7 +889,7 @@
             "description": "The request was successful; the request was well-formed and received properly."
           },
           "202": {
-            "description": "Compute restart initiated.",
+            "description": "Compute start initiated.",
             "headers": {
               "Azure-AsyncOperation": {
                 "description": "URI to poll for asynchronous operation status.",
@@ -2077,7 +2091,7 @@
       ],
       "x-ms-discriminator-value": "AmlCompute"
     },
-    "AmlSpark": {
+    "AzureMLSpark": {
       "description": "An Azure Machine Learning Spark compute.",
       "allOf": [
         {
@@ -2134,10 +2148,10 @@
                   "description": "Worker settings for Spark cluster.",
                   "$ref": "#/definitions/SparkWorkerSettings"
                 },
-                "idleSecondsBeforeAutoTermination": {
+                "idleMinutesBeforeAutoStop": {
                   "type": "integer",
                   "format": "int32",
-                  "description": "Deallocate nodes in the cluster after it is inactive for this time in seconds. If not set, nodes in this cluster will not be automatically deallocated"
+                  "description": "Deallocate nodes in the cluster after it is inactive for this time in minutes. If not set, nodes in this cluster will not be automatically deallocated"
                 },
                 "userAccountCredentials": {
                   "title": "User account credentials.",
@@ -2174,12 +2188,12 @@
                   "type": "string",
                   "readOnly": true,
                   "title": "State of Spark cluster.",
-                  "description": "State of Spark. Possible values are: Starting - Indicates that the cluster is in the process of being created. Running - Indicates that the cluster has been started and is ready for use. Terminating - Indicates that the cluster is in the process of being terminated. Terminated - Indicates that a cluster has been successfully terminated. Failed - Indicates that a cluster is unusable.",
+                  "description": "State of Spark. Possible values are: Starting - Indicates that the cluster is in the process of being created. Running - Indicates that the cluster has been started and is ready for use. Stopping - Indicates that the cluster is in the process of being Stopped. Stopped - Indicates that a cluster has been successfully Stopped. Failed - Indicates that a cluster is unusable.",
                   "enum": [
                     "Starting",
                     "Running",
-                    "Terminating",
-                    "Terminated",
+                    "Stopping",
+                    "Stopped",
                     "Failed"
                   ],
                   "x-ms-enum": {
@@ -2235,7 +2249,7 @@
           }
         }
       ],
-      "x-ms-discriminator-value": "AmlSpark"
+      "x-ms-discriminator-value": "AzureMLSpark"
     },
     "VirtualMachine": {
       "description": "A Machine Learning compute based on Azure Virtual Machines.",
@@ -2579,7 +2593,7 @@
           "description": "Number of compute nodes which are in preempted state."
         }
       },
-      "description": "Counts of various compute node states on the amlSpark."
+      "description": "Counts of various compute node states on the AzureMLSpark."
     },
     "AmlComputeUpdateProperties": {
       "allOf": [
@@ -2599,7 +2613,7 @@
       ],
       "description": "The properties of a amlCompute that need to be updated."
     },
-    "AmlSparkUpdateProperties": {
+    "AzureMLSparkUpdateProperties": {
       "allOf": [
         {
           "$ref": "#/definitions/ClusterUpdateProperties"
@@ -2612,10 +2626,10 @@
               "title": "Scale settings.",
               "description": "Desired scale settings for the Spark workers."
             },
-            "idleSecondsBeforeAutoTermination": {
+            "idleMinutesBeforeAutoStop": {
               "type": "integer",
               "format": "int32",
-              "description": "Deallocate nodes in the cluster after it is inactive for this time in seconds. If not set, nodes in this cluster will not be automatically deallocated"
+              "description": "Deallocate nodes in the cluster after it is inactive for this time in minutes. If not set, nodes in this cluster will not be automatically deallocated"
             }
           }
         }
@@ -2686,11 +2700,17 @@
           "title": "Node ID.",
           "description": "ID of the compute node."
         },
-        "ipAddress": {
+        "publicIpAddress": {
           "readOnly": true,
           "type": "string",
-          "title": "IP address.",
+          "title": "Public IP address.",
           "description": "Public IP address of the compute node."
+        },
+        "privateIpAddress": {
+          "readOnly": true,
+          "type": "string",
+          "title": "Private IP address.",
+          "description": "Private IP address of the compute node."
         },
         "port": {
           "readOnly": true,
@@ -2720,8 +2740,8 @@
       },
       "x-ms-discriminator-value": "AmlCompute"
     },
-    "AmlSparkNodesInformation": {
-      "description": "Compute node information related to an AmlSpark Compute.",
+    "AzureMLSparkNodesInformation": {
+      "description": "Compute node information related to an AzureMLSpark Compute.",
       "allOf": [
         {
           "$ref": "#/definitions/ComputeNodesInformation"
@@ -2733,17 +2753,17 @@
               "readOnly": true,
               "type": "array",
               "items": {
-                "$ref": "#/definitions/AmlSparkNodeInformation"
+                "$ref": "#/definitions/AzureMLSparkNodeInformation"
               },
               "description": "The collection of returned AML Compute nodes details."
             }
           }
         }
       ],
-      "x-ms-discriminator-value": "AmlSpark"
+      "x-ms-discriminator-value": "AzureMLSpark"
     },
-    "AmlSparkNodeInformation": {
-      "description": "Compute node information related to an AmlSpark Compute.",
+    "AzureMLSparkNodeInformation": {
+      "description": "Compute node information related to an AzureMLSpark Compute.",
       "properties": {
         "nodeId": {
           "readOnly": true,
@@ -2751,11 +2771,17 @@
           "title": "Node ID.",
           "description": "ID of the compute node."
         },
-        "ipAddress": {
+        "publicIpAddress": {
           "readOnly": true,
           "type": "string",
-          "title": "IP address.",
+          "title": "Public IP address.",
           "description": "Public IP address of the compute node."
+        },
+        "privateIpAddress": {
+          "readOnly": true,
+          "type": "string",
+          "title": "Private IP address.",
+          "description": "Private IP address of the compute node."
         },
         "port": {
           "readOnly": true,
@@ -2796,7 +2822,7 @@
           }
         }
       },
-      "x-ms-discriminator-value": "AmlSpark"
+      "x-ms-discriminator-value": "AzureMLSpark"
     },
     "VirtualMachineSshCredentials": {
       "type": "object",
@@ -2902,7 +2928,7 @@
       "enum": [
         "AKS",
         "AmlCompute",
-        "AmlSpark",
+        "AzureMLSpark",
         "DataFactory",
         "VirtualMachine",
         "HDInsight",
@@ -3084,7 +3110,7 @@
     },
     "SparkConfiguration": {
       "properties": {
-        "configName": {
+        "name": {
           "type": "string",
           "title": "Configuration Name.",
           "description": "The key of the Spark configuration."
@@ -3096,7 +3122,7 @@
         }
       },
       "required": [
-        "configName",
+        "name",
         "value"
       ],
       "description": "An environment variable definition."
