@@ -2108,18 +2108,9 @@
                   "description": "The Spark version of the cluster. This property is mutually exclusive with containerSettings.",
                   "type": "string"
                 },
-                "pythonVersion": {
-                  "description": "The Python version used for Spark. This property is mutually exclusive with containerSettings.",
-                  "type": "string",
-                  "enum": [
-                    "2",
-                    "3"
-                  ],
-                  "default": "3"
-                },
                 "containerSettings": {
                   "title": "Container settings.",
-                  "description": "Custom docker container settings for the Spark cluster. This property is mutually exclusive with sparkVersion and pythonVersion.",
+                  "description": "Custom docker container settings for the Spark cluster. This property is mutually exclusive with sparkVersion.",
                   "$ref": "#/definitions/ContainerSettings"
                 },
                 "sparkConfigurations": {

@@ -20,7 +20,6 @@
                     "provisioningState": "Succeeded",
                     "properties": {
                       "sparkVersion": "2.3.0",
-                      "pythonVersion": "3",
                       "sparkConfigurations": [ 
                           {
                             "name": "spark.speculation",
